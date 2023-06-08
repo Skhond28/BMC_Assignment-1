@@ -1,0 +1,62 @@
+import requests
+import pytest
+
+# Define the base URL for the Restful booker API
+BASE_URL = 'https://restful-booker.herokuapp.com'
+
+# Test case: CreateBooking
+def test_create_booking():
+    url = f'{BASE_URL}/booking'
+    headers = {'Content-Type': 'application/json'}
+    data = {
+        'firstname': 'John',
+        'lastname': 'Doe',
+        'totalprice': 100,
+        'depositpaid': True,
+        'bookingdates': {
+            'checkin': '2023-06-01',
+            'checkout': '2023-06-05'
+        },
+        'additionalneeds': 'Breakfast'
+    }
+    response = requests.post(url, json=data, headers=headers)
+    assert response.status_code == 200
+    assert 'bookingid' in response.json()
+
+# Test case: GetBooking
+def test_get_booking():
+    # Assuming there is a booking with ID 1
+    booking_id = 1
+    url = f'{BASE_URL}/booking/{booking_id}'
+    response = requests.get(url)
+    assert response.status_code == 200
+    assert response.json()['bookingid'] == booking_id
+
+# Test case: UpdateBooking
+def test_update_booking():
+    # Assuming there is a booking with ID 1
+    booking_id = 1
+    url = f'{BASE_URL}/booking/{booking_id}'
+    headers = {'Content-Type': 'application/json'}
+    data = {
+        'firstname': 'John',
+        'lastname': 'Doe',
+        'totalprice': 150,
+        'depositpaid': True,
+        'bookingdates': {
+            'checkin': '2023-06-01',
+            'checkout': '2023-06-07'
+        },
+        'additionalneeds': 'Breakfast'
+    }
+    response = requests.put(url, json=data, headers=headers)
+    assert response.status_code == 200
+    assert response.json()['totalprice'] == data['totalprice']
+
+# Test case: DeleteBooking
+def test_delete_booking():
+    # Assuming there is a booking with ID 1
+    booking_id = 1
+    url = f'{BASE_URL}/booking/{booking_id}'
+    response = requests.delete(url)
+    assert response.status_code == 201

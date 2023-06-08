@@ -1,0 +1,25 @@
+import csv
+import json
+import pytest
+
+@pytest.fixture
+def test_data(request):
+    # Read test data from an external file
+    file_path = request.param  # Assuming the file path is passed as a parameter
+    test_data = None
+
+    if file_path.endswith('.csv'):
+        with open(file_path, 'r') as csv_file:
+            csv_reader = csv.DictReader(csv_file)
+            test_data = list(csv_reader)
+    elif file_path.endswith('.json'):
+        with open(file_path, 'r') as json_file:
+            test_data = json.load(json_file)
+
+    return test_data
+
+@pytest.mark.parametrize('test_data', ['testdata.csv'], indirect=True)
+def test_search_results(test_data):
+    # Test case implementation
+    # Launch the browser, open Google, perform search, print search results
+    pass
